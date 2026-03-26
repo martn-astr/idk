@@ -8,7 +8,7 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      background: #0d0d1a;
+      background: #0a0a1a;
       color: #e0e0ff;
       font-family: 'Segoe UI', Arial, sans-serif;
       display: flex;
@@ -19,33 +19,45 @@
     }
 
     h1 {
-      font-size: 2.4rem;
+      font-size: 2.2rem;
       letter-spacing: 4px;
       color: #ff6fff;
       text-shadow: 0 0 18px #ff00ff88;
-      margin: 14px 0 6px;
+      margin: 12px 0 6px;
       user-select: none;
     }
 
-    #score-bar {
+    /* ─── HUD ─── */
+    #hud {
       display: flex;
-      gap: 28px;
-      align-items: center;
-      font-size: 1.1rem;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+      font-size: 0.95rem;
       margin-bottom: 8px;
     }
-    #score-bar span { color: #aaf; }
-    #score-val   { color: #ffe066; font-weight: bold; font-size: 1.4rem; }
-    #combo-val   { color: #ff8c42; font-weight: bold; }
-    #total-val   { color: #88ffcc; }
+    .hud-pill {
+      background: #13132b;
+      border: 1px solid #33337a;
+      border-radius: 20px;
+      padding: 3px 14px;
+      white-space: nowrap;
+    }
+    .hv { font-weight: bold; font-size: 1.05rem; }
+    .hv-score  { color: #ffe066; }
+    .hv-wave   { color: #88ffcc; }
+    .hv-coins  { color: #ffcc00; }
+    .hv-combo  { color: #ff8c42; }
+    .hv-best   { color: #cc88ff; }
 
+    /* ─── Layout ─── */
     #main {
       display: flex;
-      gap: 18px;
+      gap: 16px;
       align-items: flex-start;
       width: 100%;
-      max-width: 1060px;
-      padding: 0 8px 16px;
+      max-width: 1100px;
+      padding: 0 8px 20px;
     }
 
     #canvas-wrap {
@@ -62,127 +74,125 @@
       box-shadow: 0 0 28px #2222aa66;
     }
 
-    /* ---- SHOP ---- */
+    /* ─── Shop ─── */
     #shop {
       flex: 1;
       background: #13132b;
       border: 1px solid #33337a;
       border-radius: 12px;
       padding: 12px 10px;
-      min-width: 240px;
-      max-height: 600px;
+      min-width: 230px;
+      max-height: 580px;
       overflow-y: auto;
     }
-
     #shop h2 {
       text-align: center;
-      font-size: 1.2rem;
+      font-size: 1.1rem;
       color: #cc88ff;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
       letter-spacing: 2px;
     }
-
-    .upgrade-btn {
+    .sec {
+      color: #7777cc;
+      font-size: 0.73rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin: 10px 0 5px;
+      border-bottom: 1px solid #2a2a5a;
+      padding-bottom: 3px;
+    }
+    .upg-btn {
       display: flex;
       flex-direction: column;
       width: 100%;
       background: #1e1e3e;
       border: 1px solid #44449a;
       border-radius: 8px;
-      padding: 8px 10px;
-      margin-bottom: 7px;
+      padding: 7px 10px;
+      margin-bottom: 6px;
       cursor: pointer;
-      transition: background 0.15s, border-color 0.15s;
+      transition: background 0.12s, border-color 0.12s;
       text-align: left;
       color: #e0e0ff;
     }
-    .upgrade-btn:hover:not(:disabled) { background: #282860; border-color: #8888ff; }
-    .upgrade-btn:disabled { opacity: 0.45; cursor: not-allowed; }
-    .upgrade-btn .upg-top { display: flex; justify-content: space-between; align-items: center; }
-    .upgrade-btn .upg-name { font-weight: bold; font-size: 0.95rem; }
-    .upgrade-btn .upg-cost { color: #ffe066; font-size: 0.9rem; }
-    .upgrade-btn .upg-desc { font-size: 0.78rem; color: #aab; margin-top: 3px; }
-    .upgrade-btn .upg-level { font-size: 0.75rem; color: #88ffcc; margin-top: 2px; }
+    .upg-btn:hover:not(:disabled) { background: #282860; border-color: #8888ff; }
+    .upg-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .upg-top  { display: flex; justify-content: space-between; align-items: center; }
+    .upg-name { font-weight: bold; font-size: 0.9rem; }
+    .upg-cost { color: #ffcc00; font-size: 0.84rem; }
+    .upg-desc { font-size: 0.74rem; color: #aab; margin-top: 2px; }
+    .upg-lvl  { font-size: 0.71rem; color: #88ffcc; margin-top: 2px; }
 
-    .section-title {
-      color: #7777cc;
-      font-size: 0.78rem;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      margin: 10px 0 5px;
-      border-bottom: 1px solid #2a2a5a;
-      padding-bottom: 4px;
-    }
-
-    #prestige-btn {
+    #next-wave-btn {
       width: 100%;
-      margin-top: 10px;
+      margin-top: 8px;
       padding: 10px;
-      background: linear-gradient(135deg, #660066, #003366);
-      border: 1px solid #cc44cc;
+      background: linear-gradient(135deg, #004400, #003322);
+      border: 1px solid #44cc66;
       border-radius: 8px;
-      color: #ffaaff;
+      color: #88ffcc;
       font-size: 1rem;
       font-weight: bold;
       cursor: pointer;
       letter-spacing: 1px;
-      transition: opacity 0.2s;
+      transition: opacity 0.15s;
     }
-    #prestige-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+    #next-wave-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+    #next-wave-btn:hover:not(:disabled) { opacity: 0.85; }
+
+    #prestige-btn {
+      width: 100%;
+      margin-top: 6px;
+      padding: 8px;
+      background: linear-gradient(135deg, #550055, #002244);
+      border: 1px solid #cc44cc;
+      border-radius: 8px;
+      color: #ffaaff;
+      font-size: 0.9rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+    #prestige-btn:disabled { opacity: 0.3; cursor: not-allowed; }
     #prestige-btn:hover:not(:disabled) { opacity: 0.85; }
+    #prestige-info { text-align: center; font-size: 0.72rem; color: #cc88ff; margin-top: 4px; }
 
-    #prestige-info {
-      text-align: center;
-      font-size: 0.78rem;
-      color: #cc88ff;
-      margin-top: 5px;
-    }
-
-    /* ---- Toast messages ---- */
+    /* ─── Toasts ─── */
     #toasts {
-      position: fixed;
-      top: 80px;
-      left: 50%;
-      transform: translateX(-50%);
-      pointer-events: none;
-      z-index: 99;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 6px;
+      position: fixed; top: 72px; left: 50%; transform: translateX(-50%);
+      pointer-events: none; z-index: 99;
+      display: flex; flex-direction: column; align-items: center; gap: 5px;
     }
     .toast {
-      background: #2a2a5a;
-      border: 1px solid #6666cc;
-      border-radius: 8px;
-      padding: 6px 16px;
-      font-size: 0.95rem;
-      color: #ccccff;
+      background: #2a2a5a; border: 1px solid #6666cc;
+      border-radius: 8px; padding: 5px 16px;
+      font-size: 0.9rem; color: #ccccff;
       animation: toastIn 0.2s ease, toastOut 0.4s ease 1.4s forwards;
     }
-    @keyframes toastIn  { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
-    @keyframes toastOut { to   { opacity: 0; transform: translateY(-8px); } }
+    @keyframes toastIn  { from { opacity:0; transform:translateY(-8px) } to   { opacity:1; transform:translateY(0) } }
+    @keyframes toastOut { to   { opacity:0; transform:translateY(-8px) } }
 
-    /* ---- Floating score text ---- */
-    .float-score {
+    /* ─── Floating text ─── */
+    .float-txt {
       position: absolute;
-      font-weight: bold;
-      font-size: 1.1rem;
-      color: #ffe066;
-      text-shadow: 0 0 6px #ff880088;
-      pointer-events: none;
-      animation: floatUp 1s ease forwards;
-      user-select: none;
+      font-weight: bold; font-size: 1rem;
+      text-shadow: 0 0 6px #00000088;
+      pointer-events: none; user-select: none;
+      animation: floatUp 0.9s ease forwards;
+      white-space: nowrap;
     }
-    @keyframes floatUp {
-      0%   { opacity: 1; transform: translateY(0); }
-      100% { opacity: 0; transform: translateY(-60px); }
+    @keyframes floatUp { 0% { opacity:1; transform:translateY(0) } 100% { opacity:0; transform:translateY(-52px) } }
+
+    /* ─── Controls hint ─── */
+    #hint {
+      font-size: 0.75rem; color: #6666aa; margin-bottom: 4px;
+      text-align: center;
     }
 
-    @media (max-width: 700px) {
+    @media (max-width: 720px) {
       #main { flex-direction: column; align-items: center; }
       canvas { width: 100%; height: auto; }
-      #shop { max-height: 320px; width: 100%; max-width: 500px; }
+      #shop  { max-height: 300px; width: 100%; max-width: 500px; }
     }
   </style>
 </head>
@@ -190,328 +200,470 @@
 
 <h1>⚡ MEGABONK 2D ⚡</h1>
 
-<div id="score-bar">
-  <span>Score: <strong id="score-val">0</strong></span>
-  <span>Combo: <strong id="combo-val">x1</strong></span>
-  <span>All-time: <strong id="total-val">0</strong></span>
-  <span>Prestige: <strong id="prestige-val" style="color:#cc88ff">0</strong></span>
+<div id="hud">
+  <div class="hud-pill">Score: <span class="hv hv-score" id="hv-score">0</span></div>
+  <div class="hud-pill">Wave: <span class="hv hv-wave" id="hv-wave">1</span></div>
+  <div class="hud-pill">🪙 <span class="hv hv-coins" id="hv-coins">0</span></div>
+  <div class="hud-pill">Combo: <span class="hv hv-combo" id="hv-combo">x1</span></div>
+  <div class="hud-pill">Best: <span class="hv hv-best" id="hv-best">0</span></div>
 </div>
+
+<p id="hint">Click anywhere in the arena to aim &amp; boost the nearest ball</p>
 
 <div id="main">
   <div id="canvas-wrap">
-    <canvas id="c" width="520" height="580"></canvas>
+    <canvas id="c" width="640" height="520"></canvas>
   </div>
 
   <div id="shop">
-    <h2>🛒 UPGRADES</h2>
+    <h2>🛒 SHOP</h2>
+    <div class="sec">Upgrades — buy with 🪙</div>
+    <div id="upg-list"></div>
 
-    <div class="section-title">Ball</div>
-    <!-- upgraded dynamically -->
-    <div id="upgrades-list"></div>
+    <div class="sec">Wave</div>
+    <button id="next-wave-btn" disabled>▶ Start Next Wave</button>
 
-    <div class="section-title">Prestige</div>
-    <button id="prestige-btn" disabled>⭐ PRESTIGE (need 10 000)</button>
-    <div id="prestige-info">Resets score &amp; upgrades. Each prestige = +25% bonus forever.</div>
+    <div class="sec">Prestige</div>
+    <button id="prestige-btn" disabled>⭐ Prestige</button>
+    <div id="prestige-info">Need 50 000 all‑time score. Resets run, +25% score bonus forever.</div>
   </div>
 </div>
 
 <div id="toasts"></div>
 
 <script>
-// ─────────────────────────────────────────────
-// State
-// ─────────────────────────────────────────────
-const PRESTIGE_COST = 10000;
+// ═══════════════════════════════════════════════════════
+//  MEGABONK 2D
+//  — Ball bounces around an arena automatically
+//  — Click anywhere to redirect the nearest ball
+//  — Destroy enemy creatures to earn coins & score
+//  — Clear all enemies to complete the wave
+//  — Spend coins on upgrades between (or during) waves
+// ═══════════════════════════════════════════════════════
 
-let state = {
-  score: 0,
-  allTime: 0,
-  prestige: 0,
-  prestigeBonus: 1,   // +25% per prestige
-  combo: 1,
-  comboTimer: 0,
-  upgrades: {},       // id -> level
-  autoBonkTimer: 0,
-};
+const canvas = document.getElementById('c');
+const ctx    = canvas.getContext('2d');
+const W = canvas.width, H = canvas.height;
+
+const PRESTIGE_THRESHOLD = 50000;
 
 // ─────────────────────────────────────────────
 // Upgrade definitions
 // ─────────────────────────────────────────────
 const UPGRADES = [
   {
-    id: 'speed',
-    name: '🚀 Ball Speed',
-    desc: 'Increases how fast the ball zooms around.',
-    baseCost: 15,
-    costMul: 1.6,
-    maxLevel: 20,
-    apply: (lvl) => { /* handled in physics */ },
-    getValue: (lvl) => 1 + lvl * 0.25,
+    id: 'size',      name: '🎯 Ball Size',
+    desc: 'Bigger ball — hits enemies more easily.',
+    baseCost: 20,  costMul: 1.65, max: 10,
+    val: l => 14 + l * 2,
   },
   {
-    id: 'size',
-    name: '🎯 Ball Size',
-    desc: 'Larger ball = easier to click.',
-    baseCost: 20,
-    costMul: 1.55,
-    maxLevel: 15,
-    getValue: (lvl) => 16 + lvl * 3,
+    id: 'speed',     name: '🚀 Ball Speed',
+    desc: 'Ball moves faster through the arena.',
+    baseCost: 30,  costMul: 1.8,  max: 12,
+    val: l => 1 + l * 0.18,
   },
   {
-    id: 'bonkPower',
-    name: '💥 Bonk Power',
-    desc: 'Each bonk scores more points.',
-    baseCost: 25,
-    costMul: 1.7,
-    maxLevel: 30,
-    getValue: (lvl) => 1 + lvl,
+    id: 'power',     name: '💥 Bonk Power',
+    desc: 'Ball pierces through extra enemies per hit.',
+    baseCost: 60,  costMul: 2.1,  max: 6,
+    val: l => 1 + l,
   },
   {
-    id: 'multiball',
-    name: '🎱 Multi-Ball',
-    desc: 'Add an extra ball to the arena.',
-    baseCost: 100,
-    costMul: 3.5,
-    maxLevel: 5,
-    getValue: (lvl) => lvl,
+    id: 'multiball', name: '🎱 Multi-Ball',
+    desc: 'Add one extra ball to the arena.',
+    baseCost: 200, costMul: 4.0,  max: 4,
+    val: l => l,
   },
   {
-    id: 'wallBounce',
-    name: '🔀 Wall Bonk',
-    desc: 'Balls score points on wall bounces too.',
-    baseCost: 80,
-    costMul: 2.2,
-    maxLevel: 10,
-    getValue: (lvl) => lvl * 0.5,
+    id: 'explode',   name: '💣 Explosive Bonk',
+    desc: 'Killing an enemy triggers an AoE blast.',
+    baseCost: 120, costMul: 2.5,  max: 6,
+    val: l => l * 20,                // blast radius in px
   },
   {
-    id: 'comboLen',
-    name: '⏱️ Combo Window',
-    desc: 'Extends how long combos last.',
-    baseCost: 60,
-    costMul: 1.9,
-    maxLevel: 10,
-    getValue: (lvl) => 1.5 + lvl * 0.4,
+    id: 'chain',     name: '⛓️ Chain Kill',
+    desc: 'Each kill chains damage to the nearest enemy.',
+    baseCost: 90,  costMul: 2.3,  max: 5,
+    val: l => l * 22,               // chain range in px
   },
   {
-    id: 'autoClick',
-    name: '🤖 Auto-Bonk',
-    desc: 'Automatically bonks balls periodically.',
-    baseCost: 200,
-    costMul: 2.8,
-    maxLevel: 8,
-    getValue: (lvl) => lvl,   // clicks per second
+    id: 'magnet',    name: '🧲 Coin Magnet',
+    desc: 'Balls automatically pull in nearby coins.',
+    baseCost: 50,  costMul: 1.9,  max: 5,
+    val: l => l * 50,               // pull radius in px
   },
   {
-    id: 'multiplier',
-    name: '✨ Score Multiplier',
-    desc: 'Multiplies all score gained.',
-    baseCost: 300,
-    costMul: 3.0,
-    maxLevel: 10,
-    getValue: (lvl) => 1 + lvl * 0.5,
+    id: 'wallBonus', name: '🔀 Wall Bonus',
+    desc: 'Score points on every wall bounce.',
+    baseCost: 40,  costMul: 1.75, max: 8,
+    val: l => l * 2,
   },
   {
-    id: 'trailLen',
-    name: '🌈 Particle Trail',
-    desc: 'Balls leave a colorful trail.',
-    baseCost: 50,
-    costMul: 1.8,
-    maxLevel: 5,
-    getValue: (lvl) => lvl,
+    id: 'comboTime', name: '⏱️ Combo Time',
+    desc: 'Extends the combo kill window.',
+    baseCost: 35,  costMul: 1.7,  max: 8,
+    val: l => 1.5 + l * 0.4,       // seconds
   },
   {
-    id: 'gravity',
-    name: '🌍 Gravity Field',
-    desc: 'Gentle gravity makes the bounce wilder.',
-    baseCost: 150,
-    costMul: 2.5,
-    maxLevel: 5,
-    getValue: (lvl) => lvl * 0.04,
+    id: 'mult',      name: '✨ Score Multiplier',
+    desc: 'All score earned is multiplied by this.',
+    baseCost: 250, costMul: 3.2,  max: 8,
+    val: l => 1 + l * 0.5,
   },
 ];
 
-function upgLevel(id) { return state.upgrades[id] || 0; }
-function upgVal(id)   { const u = UPGRADES.find(u => u.id === id); return u ? u.getValue(upgLevel(id)) : 0; }
-function upgCost(id) {
+// ─────────────────────────────────────────────
+// State
+// ─────────────────────────────────────────────
+let state = {
+  phase:        'playing',  // 'playing' | 'waveEnd'
+  wave:         1,
+  score:        0,
+  allTime:      0,
+  coins:        0,
+  prestige:     0,
+  prestigeBonus: 1,
+  combo:        1,
+  comboTimer:   0,
+  upgrades:     {},
+};
+
+// ─────────────────────────────────────────────
+// Entity lists
+// ─────────────────────────────────────────────
+let balls      = [];
+let enemies    = [];
+let particles  = [];
+let coinDrops  = [];
+
+// ─────────────────────────────────────────────
+// Helpers
+// ─────────────────────────────────────────────
+function uLvl(id)  { return state.upgrades[id] || 0; }
+function uVal(id)  { const u = UPGRADES.find(u => u.id === id); return u ? u.val(uLvl(id)) : 0; }
+function uCost(id) {
   const u = UPGRADES.find(u => u.id === id);
   if (!u) return Infinity;
-  const lvl = upgLevel(id);
-  if (lvl >= u.maxLevel) return Infinity;
-  return Math.floor(u.baseCost * Math.pow(u.costMul, lvl));
+  const l = uLvl(id);
+  if (l >= u.max) return Infinity;
+  return Math.floor(u.baseCost * Math.pow(u.costMul, l));
+}
+
+function fmt(n) {
+  if (n >= 1e9) return (n / 1e9).toFixed(1) + 'B';
+  if (n >= 1e6) return (n / 1e6).toFixed(1) + 'M';
+  if (n >= 1e3) return (n / 1e3).toFixed(1) + 'K';
+  return String(Math.floor(n));
+}
+
+function clampSpd(b, lo, hi) {
+  const s = Math.hypot(b.vx, b.vy);
+  if (s === 0) return;
+  if      (s > hi) { b.vx = b.vx / s * hi; b.vy = b.vy / s * hi; }
+  else if (s < lo) { b.vx = b.vx / s * lo; b.vy = b.vy / s * lo; }
 }
 
 // ─────────────────────────────────────────────
-// Canvas / physics
+// Entity factories
 // ─────────────────────────────────────────────
-const canvas = document.getElementById('c');
-const ctx    = canvas.getContext('2d');
-const W = canvas.width, H = canvas.height;
-
-const TRAIL_MAX = 30;
-
-function clampSpeed(b, minSpd, maxSpd) {
-  const spd = Math.hypot(b.vx, b.vy);
-  if (spd === 0) return;
-  if (spd > maxSpd) {
-    b.vx = b.vx / spd * maxSpd;
-    b.vy = b.vy / spd * maxSpd;
-  } else if (spd < minSpd) {
-    b.vx = b.vx / spd * minSpd;
-    b.vy = b.vy / spd * minSpd;
-  }
+function makeBall(x, y, vx, vy) {
+  return { x, y, vx, vy, hue: Math.random() * 360, trail: [] };
 }
 
-function makeBall(x, y, vx, vy, hue) {
+// Enemy type config
+const ETYPE = {
+  blorp:   { r: 10, maxHp: 1,  spd: 2.4, pts: 10,  coins: [1, 2],  hueBase: null  },
+  chunker: { r: 20, maxHp: 3,  spd: 1.1, pts: 45,  coins: [3, 6],  hueBase: 210   },
+  speeder: { r: 7,  maxHp: 1,  spd: 4.5, pts: 25,  coins: [2, 3],  hueBase: 0     },
+  brute:   { r: 32, maxHp: 12, spd: 0.75,pts: 250, coins: [12, 22], hueBase: 30   },
+};
+
+function makeEnemy(type, x, y) {
+  const t = ETYPE[type];
+  const hue = t.hueBase !== null ? t.hueBase : Math.floor(Math.random() * 360);
+  const angle = Math.random() * Math.PI * 2;
   return {
-    x, y, vx, vy,
-    hue: hue ?? Math.random() * 360,
-    trail: [],
+    type, x, y,
+    vx: Math.cos(angle) * t.spd,
+    vy: Math.sin(angle) * t.spd,
+    r: t.r, hp: t.maxHp, maxHp: t.maxHp,
+    hue, pts: t.pts, coins: t.coins,
+    flash: 0,
   };
 }
 
-let balls = [ makeBall(W/2, H/2, 3.2, -2.8, 200) ];
+// ─────────────────────────────────────────────
+// Wave spawning
+// ─────────────────────────────────────────────
+function spawnWave(n) {
+  enemies  = [];
+  coinDrops = [];
+  particles = [];
 
-// Particle pool
-const particles = [];
-function spawnParticles(x, y, hue, count) {
-  for (let i = 0; i < count; i++) {
-    const angle = Math.random() * Math.PI * 2;
-    const spd   = 1.5 + Math.random() * 3.5;
-    particles.push({
-      x, y,
-      vx: Math.cos(angle) * spd,
-      vy: Math.sin(angle) * spd,
-      life: 1,
-      decay: 0.03 + Math.random() * 0.04,
-      hue,
-      r: 2 + Math.random() * 3,
-    });
-  }
+  const blorps   = 6 + n * 2;
+  const chunkers = Math.max(0, Math.floor((n - 1) / 2));
+  const speeders = Math.max(0, Math.floor((n - 2) / 3));
+  const brutes   = n >= 5 ? Math.floor(n / 5) : 0;
+
+  const spawnType = (type, count) => {
+    const t = ETYPE[type];
+    for (let i = 0; i < count; i++) {
+      const r = t.r;
+      const x = r + 40 + Math.random() * (W - r * 2 - 80);
+      const y = r + 40 + Math.random() * (H - r * 2 - 80);
+      enemies.push(makeEnemy(type, x, y));
+    }
+  };
+
+  spawnType('blorp',   blorps);
+  spawnType('chunker', chunkers);
+  spawnType('speeder', speeders);
+  spawnType('brute',   brutes);
 }
 
 // ─────────────────────────────────────────────
-// Scoring
-// ─────────────────────────────────────────────
-function addScore(raw, x, y) {
-  const pts = Math.round(raw * upgVal('multiplier') * state.prestigeBonus * state.combo);
-  state.score  += pts;
-  state.allTime += pts;
-  updateUI();
-  if (x != null) spawnFloatScore(pts, x, y);
-  return pts;
-}
-
-function bonkCombo() {
-  state.combo   = Math.min(state.combo + 1, 64);
-  const comboSec = upgVal('comboLen');
-  state.comboTimer = comboSec * 60;
-}
-
-// ─────────────────────────────────────────────
-// Ball sync with upgrade
+// Ball management
 // ─────────────────────────────────────────────
 function syncBalls() {
-  const desired = 1 + upgVal('multiball');
+  const desired = 1 + uVal('multiball');
+  const spd = 3 * uVal('speed');
   while (balls.length < desired) {
-    const angle = Math.random() * Math.PI * 2;
-    const spd   = (2 + Math.random()) * upgVal('speed');
+    const a = Math.random() * Math.PI * 2;
     balls.push(makeBall(
       80 + Math.random() * (W - 160),
       80 + Math.random() * (H - 160),
-      Math.cos(angle) * spd,
-      Math.sin(angle) * spd,
-      Math.random() * 360
+      Math.cos(a) * spd, Math.sin(a) * spd
     ));
   }
   while (balls.length > desired) balls.pop();
 }
 
 // ─────────────────────────────────────────────
-// Physics update
+// Particles
 // ─────────────────────────────────────────────
-let lastTime = 0;
-function update(ts) {
-  const dt = Math.min((ts - lastTime) / 16.67, 3);
-  lastTime = ts;
+function spawnParticles(x, y, hue, count, big) {
+  for (let i = 0; i < count; i++) {
+    const a   = Math.random() * Math.PI * 2;
+    const spd = big ? (3 + Math.random() * 6) : (1.5 + Math.random() * 3.5);
+    particles.push({
+      x, y,
+      vx: Math.cos(a) * spd,
+      vy: Math.sin(a) * spd,
+      life:  1,
+      decay: big ? 0.018 + Math.random() * 0.018 : 0.03 + Math.random() * 0.04,
+      hue:   hue + (Math.random() - 0.5) * 40,
+      r:     big ? 3 + Math.random() * 5 : 2 + Math.random() * 3,
+    });
+  }
+}
 
-  const speedMul = upgVal('speed');
-  const radius   = upgVal('size');
-  const grav     = upgVal('gravity');
-  const wallPts  = upgVal('wallBounce');
-  const trailMax = upgVal('trailLen') * 6;
+// ─────────────────────────────────────────────
+// Coin drops
+// ─────────────────────────────────────────────
+function dropCoins(x, y, range) {
+  const count = range[0] + Math.floor(Math.random() * (range[1] - range[0] + 1));
+  for (let i = 0; i < count; i++) {
+    const a = Math.random() * Math.PI * 2;
+    const d = 12 + Math.random() * 22;
+    coinDrops.push({ x: x + Math.cos(a) * d, y: y + Math.sin(a) * d, age: 0 });
+  }
+}
 
-  // Auto-bonk
-  if (upgVal('autoClick') > 0) {
-    state.autoBonkTimer += dt;
-    const interval = 60 / upgVal('autoClick');
-    if (state.autoBonkTimer >= interval) {
-      state.autoBonkTimer = 0;
-      // bonk the first ball
-      if (balls.length) {
-        const b = balls[0];
-        bonkBall(b, true);
+// ─────────────────────────────────────────────
+// Scoring & combo
+// ─────────────────────────────────────────────
+function addScore(raw, x, y, color) {
+  const pts = Math.round(raw * uVal('mult') * state.prestigeBonus * state.combo);
+  state.score   += pts;
+  state.allTime += pts;
+  updateHUD();
+  if (x != null) spawnFloatText('+' + fmt(pts), x, y, color || '#ffe066');
+  return pts;
+}
+
+function hitCombo() {
+  state.combo      = Math.min(state.combo + 1, 32);
+  state.comboTimer = uVal('comboTime') * 60;
+}
+
+// ─────────────────────────────────────────────
+// Kill an enemy (shared logic)
+// ─────────────────────────────────────────────
+function killEnemy(e) {
+  addScore(e.pts, e.x, e.y);
+  dropCoins(e.x, e.y, e.coins);
+  spawnParticles(e.x, e.y, e.hue, 22, true);
+
+  // Chain kill
+  const chainR = uVal('chain');
+  if (chainR > 0) {
+    for (const other of enemies) {
+      if (other !== e && other.hp > 0 && Math.hypot(other.x - e.x, other.y - e.y) < chainR + other.r) {
+        other.hp -= 1;
+        other.flash = 10;
+        spawnParticles(other.x, other.y, other.hue, 6);
       }
     }
   }
 
-  // Combo decay
-  if (state.comboTimer > 0) {
-    state.comboTimer -= dt;
-    if (state.comboTimer <= 0) {
-      state.combo = 1;
-      document.getElementById('combo-val').textContent = 'x1';
+  // Explosion AoE
+  const explodeR = uVal('explode');
+  if (explodeR > 0) {
+    for (const other of enemies) {
+      if (other !== e && other.hp > 0 && Math.hypot(other.x - e.x, other.y - e.y) < explodeR + other.r) {
+        other.hp -= 1;
+        other.flash = 10;
+        spawnParticles(other.x, other.y, other.hue, 6);
+      }
+    }
+    spawnParticles(e.x, e.y, 50, 14, true);
+  }
+
+  // Remove dead secondary enemies (chain/explosion victims), back-to-front to keep indices stable
+  for (let j = enemies.length - 1; j >= 0; j--) {
+    if (enemies[j].hp <= 0 && enemies[j] !== e) {
+      addScore(enemies[j].pts, enemies[j].x, enemies[j].y);
+      dropCoins(enemies[j].x, enemies[j].y, enemies[j].coins);
+      spawnParticles(enemies[j].x, enemies[j].y, enemies[j].hue, 14, true);
+      enemies.splice(j, 1);
     }
   }
 
-  // Move balls
-  for (const b of balls) {
-    // trail
-    if (trailMax > 0) {
-      b.trail.push({ x: b.x, y: b.y });
-      if (b.trail.length > trailMax) b.trail.shift();
-    } else {
-      b.trail.length = 0;
-    }
+  // Remove the primary killed enemy by reference (idx may have shifted above)
+  const finalIdx = enemies.indexOf(e);
+  if (finalIdx !== -1) enemies.splice(finalIdx, 1);
+}
 
-    b.vy += grav * dt;
-    b.x  += b.vx * dt;
-    b.y  += b.vy * dt;
+// ─────────────────────────────────────────────
+// Physics update
+// ─────────────────────────────────────────────
+let lastTime = 0;
 
-    let bounced = false;
-    if (b.x - radius < 0) {
-      b.x  = radius; b.vx = Math.abs(b.vx) * speedMul;
-      bounced = true;
-    } else if (b.x + radius > W) {
-      b.x  = W - radius; b.vx = -Math.abs(b.vx) * speedMul;
-      bounced = true;
-    }
-    if (b.y - radius < 0) {
-      b.y  = radius; b.vy = Math.abs(b.vy) * speedMul;
-      bounced = true;
-    } else if (b.y + radius > H) {
-      b.y  = H - radius; b.vy = -Math.abs(b.vy) * speedMul;
-      bounced = true;
-    }
+function update(ts) {
+  const dt = Math.min((ts - lastTime) / 16.67, 3);
+  lastTime = ts;
 
-    // Clamp speed within [min, max]
-    clampSpeed(b, 1.5 * speedMul, 14 * speedMul);
-
-    if (bounced && wallPts > 0) {
-      addScore(wallPts, b.x, b.y);
-      spawnParticles(b.x, b.y, b.hue, 3);
-    }
-  }
-
-  // Update particles
+  // Particles always animate
   for (let i = particles.length - 1; i >= 0; i--) {
     const p = particles[i];
-    p.x    += p.vx * dt;
-    p.y    += p.vy * dt;
-    p.vx   *= 0.96;
-    p.vy   *= 0.96;
+    p.x += p.vx * dt;  p.y += p.vy * dt;
+    p.vx *= 0.95;       p.vy *= 0.95;
     p.life -= p.decay * dt;
     if (p.life <= 0) particles.splice(i, 1);
+  }
+
+  if (state.phase === 'playing') {
+    // Combo decay
+    if (state.comboTimer > 0) {
+      state.comboTimer -= dt;
+      if (state.comboTimer <= 0) {
+        state.combo = 1;
+        document.getElementById('hv-combo').textContent = 'x1';
+      }
+    }
+
+    // ── Enemies move ──
+    for (const e of enemies) {
+      e.x += e.vx * dt;  e.y += e.vy * dt;
+      if (e.x - e.r < 0)    { e.x = e.r;     e.vx =  Math.abs(e.vx); }
+      if (e.x + e.r > W)    { e.x = W - e.r; e.vx = -Math.abs(e.vx); }
+      if (e.y - e.r < 0)    { e.y = e.r;     e.vy =  Math.abs(e.vy); }
+      if (e.y + e.r > H)    { e.y = H - e.r; e.vy = -Math.abs(e.vy); }
+      if (e.flash > 0) e.flash -= dt;
+    }
+
+    // ── Balls move ──
+    const radius   = uVal('size');
+    const speedMul = uVal('speed');
+    const power    = uVal('power');
+    const wallPts  = uVal('wallBonus');
+    const magnetR  = uVal('magnet');
+    const trailPoints = 4 + uLvl('speed') * 2 + uLvl('multiball') * 2;
+
+    for (const b of balls) {
+      // Trail
+      b.trail.push({ x: b.x, y: b.y });
+      if (b.trail.length > trailPoints) b.trail.shift();
+
+      b.x += b.vx * dt;
+      b.y += b.vy * dt;
+
+      let bounced = false;
+      if (b.x - radius < 0)    { b.x = radius;     b.vx =  Math.abs(b.vx); bounced = true; }
+      if (b.x + radius > W)    { b.x = W - radius; b.vx = -Math.abs(b.vx); bounced = true; }
+      if (b.y - radius < 0)    { b.y = radius;      b.vy =  Math.abs(b.vy); bounced = true; }
+      if (b.y + radius > H)    { b.y = H - radius;  b.vy = -Math.abs(b.vy); bounced = true; }
+
+      clampSpd(b, 1.8 * speedMul, 16 * speedMul);
+
+      if (bounced && wallPts > 0) {
+        addScore(wallPts, b.x, b.y, '#88ffff');
+        spawnParticles(b.x, b.y, b.hue, 4);
+      }
+
+      // ── Ball vs enemies ──
+      let pierced = 0;
+      for (let i = enemies.length - 1; i >= 0; i--) {
+        if (pierced >= power) break;
+        const e    = enemies[i];
+        const dist = Math.hypot(b.x - e.x, b.y - e.y);
+        if (dist >= radius + e.r) continue;
+
+        // Hit
+        e.hp    -= 1;
+        e.flash  = 10;
+        hitCombo();
+        pierced++;
+
+        spawnParticles(e.x, e.y, e.hue, 8);
+        b.hue = (b.hue + 22) % 360;
+
+        // Deflect ball (unless it still has pierce left)
+        if (pierced >= power) {
+          const nx  = (b.x - e.x) / (dist || 1);
+          const ny  = (b.y - e.y) / (dist || 1);
+          const dot = b.vx * nx + b.vy * ny;
+          if (dot < 0) { b.vx -= 2 * dot * nx; b.vy -= 2 * dot * ny; }
+          const overlap = (radius + e.r) - dist + 1;
+          b.x += nx * overlap;  b.y += ny * overlap;
+        }
+
+        if (e.hp <= 0) {
+          killEnemy(e);
+          spawnParticles(b.x, b.y, b.hue, 5);
+        }
+      }
+
+      // ── Coin magnet ──
+      if (magnetR > 0) {
+        for (let i = coinDrops.length - 1; i >= 0; i--) {
+          const c = coinDrops[i];
+          if (Math.hypot(b.x - c.x, b.y - c.y) < magnetR) {
+            state.coins += 1;
+            updateHUD();
+            coinDrops.splice(i, 1);
+          }
+        }
+      }
+    }
+
+    // Coin drop age-out
+    for (let i = coinDrops.length - 1; i >= 0; i--) {
+      coinDrops[i].age += dt;
+      if (coinDrops[i].age > 480) coinDrops.splice(i, 1);
+    }
+
+    // ── Wave complete? ──
+    if (enemies.length === 0) {
+      state.phase = 'waveEnd';
+      const bonus = state.wave * 60;
+      state.coins += bonus;
+      updateHUD();
+      renderShop();
+      document.getElementById('next-wave-btn').disabled = false;
+      showToast(`🎉 Wave ${state.wave} cleared! +🪙 ${bonus}`);
+    }
   }
 
   draw();
@@ -526,34 +678,76 @@ function draw() {
 
   // Background grid
   ctx.strokeStyle = '#1a1a3a';
-  ctx.lineWidth = 1;
-  for (let x = 40; x < W; x += 40) {
-    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke();
+  ctx.lineWidth   = 1;
+  for (let x = 40; x < W; x += 40) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke(); }
+  for (let y = 40; y < H; y += 40) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke(); }
+
+  // Coin drops
+  for (const c of coinDrops) {
+    const alpha = Math.min(1, (480 - c.age) / 60);
+    ctx.globalAlpha  = alpha;
+    ctx.fillStyle    = '#ffcc00';
+    ctx.shadowColor  = '#ffcc0099';
+    ctx.shadowBlur   = 7;
+    ctx.beginPath();
+    ctx.arc(c.x, c.y, 5, 0, Math.PI * 2);
+    ctx.fill();
   }
-  for (let y = 40; y < H; y += 40) {
-    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
-  }
+  ctx.globalAlpha = 1; ctx.shadowBlur = 0;
 
   // Particles
   for (const p of particles) {
     ctx.globalAlpha = p.life;
-    ctx.fillStyle = `hsl(${p.hue},100%,65%)`;
+    ctx.fillStyle   = `hsl(${p.hue},100%,65%)`;
     ctx.beginPath();
     ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
     ctx.fill();
   }
   ctx.globalAlpha = 1;
 
-  // Trails
-  const radius = upgVal('size');
+  // Enemies
+  for (const e of enemies) {
+    const light = e.flash > 0 ? 90 : 60;
+
+    // HP bar (multi-HP only)
+    if (e.maxHp > 1) {
+      const bw = e.r * 2, bh = 4;
+      ctx.fillStyle = '#222';
+      ctx.fillRect(e.x - e.r, e.y - e.r - 9, bw, bh);
+      ctx.fillStyle = `hsl(${e.hue},100%,55%)`;
+      ctx.fillRect(e.x - e.r, e.y - e.r - 9, bw * (e.hp / e.maxHp), bh);
+    }
+
+    ctx.shadowColor = `hsl(${e.hue},100%,65%)`;
+    ctx.shadowBlur  = e.flash > 0 ? 22 : 10;
+    ctx.fillStyle   = `hsl(${e.hue},85%,${light}%)`;
+    ctx.beginPath();
+    ctx.arc(e.x, e.y, e.r, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Cute eye
+    ctx.shadowBlur = 0;
+    ctx.fillStyle  = '#111';
+    ctx.beginPath();
+    ctx.arc(e.x + e.r * 0.22, e.y - e.r * 0.12, e.r * 0.28, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#fff';
+    ctx.beginPath();
+    ctx.arc(e.x + e.r * 0.26, e.y - e.r * 0.18, e.r * 0.11, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.shadowBlur = 0;
+
+  // Ball trails
+  const radius = uVal('size');
   for (const b of balls) {
     if (b.trail.length < 2) continue;
     for (let i = 1; i < b.trail.length; i++) {
-      const t  = i / b.trail.length;
-      ctx.globalAlpha = t * 0.55;
-      ctx.strokeStyle = `hsl(${b.hue},100%,65%)`;
-      ctx.lineWidth   = radius * t * 0.8;
-      ctx.lineCap     = 'round';
+      const t = i / b.trail.length;
+      ctx.globalAlpha  = t * 0.5;
+      ctx.strokeStyle  = `hsl(${b.hue},100%,65%)`;
+      ctx.lineWidth    = radius * t * 0.75;
+      ctx.lineCap      = 'round';
       ctx.beginPath();
       ctx.moveTo(b.trail[i-1].x, b.trail[i-1].y);
       ctx.lineTo(b.trail[i].x,   b.trail[i].y);
@@ -564,220 +758,234 @@ function draw() {
 
   // Balls
   for (const b of balls) {
-    const grad = ctx.createRadialGradient(
+    const g = ctx.createRadialGradient(
       b.x - radius * 0.3, b.y - radius * 0.3, radius * 0.1,
       b.x, b.y, radius
     );
-    grad.addColorStop(0, `hsl(${b.hue},100%,90%)`);
-    grad.addColorStop(0.5, `hsl(${b.hue},100%,60%)`);
-    grad.addColorStop(1, `hsl(${b.hue},80%,30%)`);
-
+    g.addColorStop(0,   `hsl(${b.hue},100%,92%)`);
+    g.addColorStop(0.5, `hsl(${b.hue},100%,62%)`);
+    g.addColorStop(1,   `hsl(${b.hue},80%,32%)`);
     ctx.shadowColor = `hsl(${b.hue},100%,65%)`;
-    ctx.shadowBlur  = 18;
-    ctx.fillStyle   = grad;
+    ctx.shadowBlur  = 22;
+    ctx.fillStyle   = g;
     ctx.beginPath();
     ctx.arc(b.x, b.y, radius, 0, Math.PI * 2);
     ctx.fill();
     ctx.shadowBlur = 0;
   }
+
+  // Enemy counter (top-left)
+  if (state.phase === 'playing') {
+    ctx.fillStyle = '#8888cc';
+    ctx.font      = '13px Segoe UI, Arial';
+    ctx.fillText(`Enemies: ${enemies.length}`, 8, 18);
+  }
+
+  // Wave-end overlay
+  if (state.phase === 'waveEnd') {
+    ctx.fillStyle = 'rgba(0,0,0,0.5)';
+    ctx.fillRect(0, 0, W, H);
+
+    ctx.textAlign   = 'center';
+    ctx.shadowColor = '#00ffaa';
+    ctx.shadowBlur  = 30;
+    ctx.fillStyle   = '#88ffcc';
+    ctx.font        = 'bold 46px Segoe UI, Arial';
+    ctx.fillText(`WAVE ${state.wave} CLEARED!`, W / 2, H / 2 - 20);
+
+    ctx.shadowBlur = 0;
+    ctx.fillStyle  = '#ffe066';
+    ctx.font       = '20px Segoe UI, Arial';
+    ctx.fillText('Buy upgrades -> click Start Next Wave', W / 2, H / 2 + 22);
+    ctx.textAlign  = 'left';
+  }
 }
 
 // ─────────────────────────────────────────────
-// Click → Bonk
+// Click → redirect / collect coins
 // ─────────────────────────────────────────────
 canvas.addEventListener('click', (e) => {
-  const rect = canvas.getBoundingClientRect();
+  const rect   = canvas.getBoundingClientRect();
   const scaleX = W / rect.width;
   const scaleY = H / rect.height;
   const mx = (e.clientX - rect.left) * scaleX;
   const my = (e.clientY - rect.top)  * scaleY;
-  const radius = upgVal('size');
 
-  for (const b of balls) {
-    const dist = Math.hypot(mx - b.x, my - b.y);
-    if (dist <= radius + 10) {
-      bonkBall(b, false, mx, my);
-      return;
+  // Collect coins on click
+  for (let i = coinDrops.length - 1; i >= 0; i--) {
+    if (Math.hypot(mx - coinDrops[i].x, my - coinDrops[i].y) < 16) {
+      state.coins += 1;
+      updateHUD();
+      coinDrops.splice(i, 1);
     }
   }
-  // Missed — flash canvas edge
-  canvas.style.outline = '2px solid #ff4444';
-  setTimeout(() => canvas.style.outline = '', 200);
+
+  if (state.phase !== 'playing') return;
+
+  // Redirect nearest ball toward click point
+  const best = balls.reduce((b, cur) => {
+    const d = Math.hypot(mx - cur.x, my - cur.y);
+    return !b || d < b.d ? { b: cur, d } : b;
+  }, null);
+
+  if (best) {
+    const b  = best.b;
+    const dx = mx - b.x,  dy = my - b.y;
+    const len = Math.hypot(dx, dy) || 1;
+    const kick = (4 + uVal('speed') * 0.6) * uVal('speed');
+    b.vx = (dx / len) * kick;
+    b.vy = (dy / len) * kick;
+    spawnParticles(b.x, b.y, b.hue, 10);
+    b.hue = (b.hue + 18) % 360;
+  }
 });
 
-function bonkBall(b, isAuto, mx, my) {
-  const power = upgVal('bonkPower');
-  bonkCombo();
-  const pts = addScore(power, b.x, b.y);
-
-  // Kick the ball away from click origin
-  if (!isAuto && mx != null) {
-    const dx = b.x - mx;
-    const dy = b.y - my;
-    const len = Math.hypot(dx, dy) || 1;
-    const kick = 3 + upgVal('speed');
-    b.vx += (dx / len) * kick;
-    b.vy += (dy / len) * kick;
-  } else {
-    // random kick
-    const angle = Math.random() * Math.PI * 2;
-    b.vx += Math.cos(angle) * 2.5;
-    b.vy += Math.sin(angle) * 2.5;
-  }
-
-  b.hue = (b.hue + 30) % 360;
-  spawnParticles(b.x, b.y, b.hue, 10 + Math.floor(upgLevel('trailLen') * 3));
-  showBonkText(b.x, b.y);
-}
-
-function showBonkText(bx, by) {
-  const el = document.createElement('div');
-  el.className = 'float-score';
-  el.textContent = state.combo > 1 ? `BONK x${state.combo}!` : 'BONK!';
-  const wrap = document.getElementById('canvas-wrap');
-  const rect  = canvas.getBoundingClientRect();
-  const wrect = wrap.getBoundingClientRect();
-  const scaleX = rect.width  / W;
-  const scaleY = rect.height / H;
-  el.style.left = (rect.left - wrect.left + bx * scaleX - 30) + 'px';
-  el.style.top  = (rect.top  - wrect.top  + by * scaleY - 20) + 'px';
-  wrap.appendChild(el);
-  setTimeout(() => el.remove(), 1100);
-}
-
 // ─────────────────────────────────────────────
-// Upgrade rendering + shop logic
+// Shop
 // ─────────────────────────────────────────────
 function renderShop() {
-  const list = document.getElementById('upgrades-list');
+  const list = document.getElementById('upg-list');
   list.innerHTML = '';
 
   for (const u of UPGRADES) {
-    const lvl  = upgLevel(u.id);
-    const cost = upgCost(u.id);
-    const maxed = lvl >= u.maxLevel;
+    const lvl   = uLvl(u.id);
+    const cost  = uCost(u.id);
+    const maxed = lvl >= u.max;
 
     const btn = document.createElement('button');
-    btn.className = 'upgrade-btn';
-    btn.disabled  = maxed || state.score < cost;
-    btn.dataset.id = u.id;
+    btn.className = 'upg-btn';
+    btn.disabled  = maxed || state.coins < cost;
 
-    const val = u.getValue(lvl);
+    // Format current value
+    let vStr = '';
+    const v = u.val(lvl);
+    switch (u.id) {
+      case 'size':      vStr = `r = ${v}`; break;
+      case 'speed':     vStr = `${v.toFixed(2)}×`; break;
+      case 'power':     vStr = `pierce ${v}`; break;
+      case 'multiball': vStr = `${v} extra`; break;
+      case 'explode':   vStr = `${v} px`; break;
+      case 'chain':     vStr = `${v} px`; break;
+      case 'magnet':    vStr = `${v} px`; break;
+      case 'wallBonus': vStr = `+${v} pts`; break;
+      case 'comboTime': vStr = `${v.toFixed(1)} s`; break;
+      case 'mult':      vStr = `${v.toFixed(1)}×`; break;
+    }
+
     btn.innerHTML = `
       <div class="upg-top">
         <span class="upg-name">${u.name}</span>
         <span class="upg-cost">${maxed ? 'MAXED' : '🪙 ' + fmt(cost)}</span>
       </div>
       <div class="upg-desc">${u.desc}</div>
-      <div class="upg-level">Level ${lvl}/${u.maxLevel} · Current: ${fmtVal(u.id, val)}</div>
+      <div class="upg-lvl">Lv ${lvl}/${u.max} · ${vStr}</div>
     `;
-
     btn.addEventListener('click', () => buyUpgrade(u.id));
     list.appendChild(btn);
   }
 
-  // Prestige
+  // Prestige button
   const pBtn = document.getElementById('prestige-btn');
-  pBtn.disabled = state.score < PRESTIGE_COST;
-  pBtn.textContent = `⭐ PRESTIGE (need ${fmt(PRESTIGE_COST)})`;
-}
-
-function fmtVal(id, val) {
-  const map = {
-    speed:      `${val.toFixed(2)}x`,
-    size:       `r=${val.toFixed(0)}`,
-    bonkPower:  `+${val}pts`,
-    multiball:  `${val} extra`,
-    wallBounce: `${val.toFixed(1)}pts/bounce`,
-    comboLen:   `${val.toFixed(1)}s`,
-    autoClick:  `${val}/s`,
-    multiplier: `${val.toFixed(1)}x`,
-    trailLen:   `${val} segments`,
-    gravity:    `${val.toFixed(2)}`,
-  };
-  return map[id] ?? val;
-}
-
-function fmt(n) {
-  if (n >= 1e9) return (n/1e9).toFixed(1) + 'B';
-  if (n >= 1e6) return (n/1e6).toFixed(1) + 'M';
-  if (n >= 1e3) return (n/1e3).toFixed(1) + 'K';
-  return n.toString();
+  pBtn.disabled = state.allTime < PRESTIGE_THRESHOLD;
+  pBtn.textContent = `⭐ Prestige (need ${fmt(PRESTIGE_THRESHOLD)} all-time)`;
 }
 
 function buyUpgrade(id) {
-  const u = UPGRADES.find(u => u.id === id);
-  if (!u) return;
-  const cost = upgCost(id);
-  if (state.score < cost) return;
-  state.score -= cost;
+  const cost = uCost(id);
+  if (state.coins < cost) return;
+  state.coins -= cost;
   state.upgrades[id] = (state.upgrades[id] || 0) + 1;
   syncBalls();
-  updateUI();
+  updateHUD();
   renderShop();
-  showToast(`${u.name} upgraded!`);
+  const u = UPGRADES.find(u => u.id === id);
+  showToast(`${u.name} → Lv ${uLvl(id)}!`);
 }
+
+// ─────────────────────────────────────────────
+// Wave button
+// ─────────────────────────────────────────────
+document.getElementById('next-wave-btn').addEventListener('click', () => {
+  if (state.phase !== 'waveEnd') return;
+  state.wave++;
+  state.phase  = 'playing';
+  spawnWave(state.wave);
+  document.getElementById('next-wave-btn').disabled = true;
+  updateHUD();
+});
 
 // ─────────────────────────────────────────────
 // Prestige
 // ─────────────────────────────────────────────
 document.getElementById('prestige-btn').addEventListener('click', () => {
-  if (state.score < PRESTIGE_COST) return;
+  if (state.allTime < PRESTIGE_THRESHOLD) return;
   state.prestige++;
   state.prestigeBonus = 1 + state.prestige * 0.25;
   state.score    = 0;
+  state.wave     = 1;
   state.upgrades = {};
   state.combo    = 1;
   state.comboTimer = 0;
-  balls = [ makeBall(W/2, H/2, 3.2, -2.8, 200) ];
-  particles.length = 0;
-  updateUI();
+  balls     = [ makeBall(W / 2, H / 2, 3, -2.5) ];
+  particles = [];
+  coinDrops = [];
+  spawnWave(1);
+  state.phase = 'playing';
+  document.getElementById('next-wave-btn').disabled = true;
+  updateHUD();
   renderShop();
-  showToast(`🌟 Prestige ${state.prestige}! Bonus: ${fmt(Math.round(state.prestigeBonus*100))}%`);
+  showToast(`🌟 Prestige ${state.prestige}! Bonus: +${state.prestige * 25}%`);
 });
 
 // ─────────────────────────────────────────────
-// UI helpers
+// HUD
 // ─────────────────────────────────────────────
-function updateUI() {
-  document.getElementById('score-val').textContent   = fmt(Math.floor(state.score));
-  document.getElementById('combo-val').textContent   = `x${state.combo}`;
-  document.getElementById('total-val').textContent   = fmt(Math.floor(state.allTime));
-  document.getElementById('prestige-val').textContent = state.prestige;
+function updateHUD() {
+  document.getElementById('hv-score').textContent = fmt(state.score);
+  document.getElementById('hv-wave').textContent  = state.wave;
+  document.getElementById('hv-coins').textContent = fmt(state.coins);
+  document.getElementById('hv-combo').textContent = `x${state.combo}`;
+  document.getElementById('hv-best').textContent  = fmt(state.allTime);
   renderShop();
 }
 
+// ─────────────────────────────────────────────
+// Toast & floating text
+// ─────────────────────────────────────────────
 function showToast(msg) {
   const wrap = document.getElementById('toasts');
   const el   = document.createElement('div');
-  el.className = 'toast';
+  el.className   = 'toast';
   el.textContent = msg;
   wrap.appendChild(el);
   setTimeout(() => el.remove(), 1800);
 }
 
-function spawnFloatScore(pts, bx, by) {
-  const el = document.createElement('div');
-  el.className = 'float-score';
-  el.textContent = `+${fmt(pts)}`;
+function spawnFloatText(text, bx, by, color) {
+  const el    = document.createElement('div');
+  el.className = 'float-txt';
+  el.textContent = text;
+  el.style.color = color || '#ffe066';
   const wrap  = document.getElementById('canvas-wrap');
   const rect  = canvas.getBoundingClientRect();
   const wrect = wrap.getBoundingClientRect();
-  const scaleX = rect.width  / W;
-  const scaleY = rect.height / H;
-  el.style.left = (rect.left - wrect.left + bx * scaleX + 5) + 'px';
-  el.style.top  = (rect.top  - wrect.top  + by * scaleY - 30) + 'px';
+  const sx = rect.width  / W;
+  const sy = rect.height / H;
+  el.style.left = (rect.left - wrect.left + bx * sx + 4) + 'px';
+  el.style.top  = (rect.top  - wrect.top  + by * sy - 24) + 'px';
   wrap.appendChild(el);
-  setTimeout(() => el.remove(), 1100);
+  setTimeout(() => el.remove(), 950);
 }
 
 // ─────────────────────────────────────────────
-// Save / Load (localStorage)
+// Save / Load
 // ─────────────────────────────────────────────
 function saveGame() {
-  localStorage.setItem('megabonk_save', JSON.stringify({
+  localStorage.setItem('megabonk2d_v2', JSON.stringify({
     score:         state.score,
     allTime:       state.allTime,
+    coins:         state.coins,
+    wave:          state.wave,
     prestige:      state.prestige,
     prestigeBonus: state.prestigeBonus,
     upgrades:      state.upgrades,
@@ -786,16 +994,17 @@ function saveGame() {
 
 function loadGame() {
   try {
-    const raw = localStorage.getItem('megabonk_save');
+    const raw = localStorage.getItem('megabonk2d_v2');
     if (!raw) return;
     const s = JSON.parse(raw);
     state.score         = s.score         ?? 0;
     state.allTime       = s.allTime       ?? 0;
+    state.coins         = s.coins         ?? 0;
+    state.wave          = s.wave          ?? 1;
     state.prestige      = s.prestige      ?? 0;
     state.prestigeBonus = s.prestigeBonus ?? 1;
     state.upgrades      = s.upgrades      ?? {};
-    syncBalls();
-  } catch(e) { console.warn('Failed to load save:', e); }
+  } catch (e) { console.warn('Load failed:', e); }
 }
 
 setInterval(saveGame, 5000);
@@ -804,9 +1013,11 @@ setInterval(saveGame, 5000);
 // Boot
 // ─────────────────────────────────────────────
 loadGame();
-updateUI();
+syncBalls();
+spawnWave(state.wave);
+updateHUD();
 renderShop();
-requestAnimationFrame((ts) => { lastTime = ts; requestAnimationFrame(update); });
+requestAnimationFrame(ts => { lastTime = ts; requestAnimationFrame(update); });
 </script>
 </body>
 </html>
