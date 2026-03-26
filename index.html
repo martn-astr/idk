@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Megabonk 2D</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #0d0d1a;
+      color: #e0e0ff;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    h1 {
+      font-size: 2.4rem;
+      letter-spacing: 4px;
+      color: #ff6fff;
+      text-shadow: 0 0 18px #ff00ff88;
+      margin: 14px 0 6px;
+      user-select: none;
+    }
+
+    #score-bar {
+      display: flex;
+      gap: 28px;
+      align-items: center;
+      font-size: 1.1rem;
+      margin-bottom: 8px;
+    }
+    #score-bar span { color: #aaf; }
+    #score-val   { color: #ffe066; font-weight: bold; font-size: 1.4rem; }
+    #combo-val   { color: #ff8c42; font-weight: bold; }
+    #total-val   { color: #88ffcc; }
+
+    #main {
+      display: flex;
+      gap: 18px;
+      align-items: flex-start;
+      width: 100%;
+      max-width: 1060px;
+      padding: 0 8px 16px;
+    }
+
+    #canvas-wrap {
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    canvas {
+      display: block;
+      border-radius: 12px;
+      border: 2px solid #44448a;
+      cursor: crosshair;
+      background: #080818;
+      box-shadow: 0 0 28px #2222aa66;
+    }
+
+    /* ---- SHOP ---- */
+    #shop {
+      flex: 1;
+      background: #13132b;
+      border: 1px solid #33337a;
+      border-radius: 12px;
+      padding: 12px 10px;
+      min-width: 240px;
+      max-height: 600px;
+      overflow-y: auto;
+    }
+
+    #shop h2 {
+      text-align: center;
+      font-size: 1.2rem;
+      color: #cc88ff;
+      margin-bottom: 10px;
+      letter-spacing: 2px;
+    }
+
+    .upgrade-btn {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      background: #1e1e3e;
+      border: 1px solid #44449a;
+      border-radius: 8px;
+      padding: 8px 10px;
+      margin-bottom: 7px;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+      text-align: left;
+      color: #e0e0ff;
+    }
+    .upgrade-btn:hover:not(:disabled) { background: #282860; border-color: #8888ff; }
+    .upgrade-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+    .upgrade-btn .upg-top { display: flex; justify-content: space-between; align-items: center; }
+    .upgrade-btn .upg-name { font-weight: bold; font-size: 0.95rem; }
+    .upgrade-btn .upg-cost { color: #ffe066; font-size: 0.9rem; }
+    .upgrade-btn .upg-desc { font-size: 0.78rem; color: #aab; margin-top: 3px; }
+    .upgrade-btn .upg-level { font-size: 0.75rem; color: #88ffcc; margin-top: 2px; }
+
+    .section-title {
+      color: #7777cc;
+      font-size: 0.78rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin: 10px 0 5px;
+      border-bottom: 1px solid #2a2a5a;
+      padding-bottom: 4px;
+    }
+
+    #prestige-btn {
+      width: 100%;
+      margin-top: 10px;
+      padding: 10px;
+      background: linear-gradient(135deg, #660066, #003366);
+      border: 1px solid #cc44cc;
+      border-radius: 8px;
+      color: #ffaaff;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      letter-spacing: 1px;
+      transition: opacity 0.2s;
+    }
+    #prestige-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+    #prestige-btn:hover:not(:disabled) { opacity: 0.85; }
+
+    #prestige-info {
+      text-align: center;
+      font-size: 0.78rem;
+      color: #cc88ff;
+      margin-top: 5px;
+    }
+
+    /* ---- Toast messages ---- */
+    #toasts {
+      position: fixed;
+      top: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      pointer-events: none;
+      z-index: 99;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+    .toast {
+      background: #2a2a5a;
+      border: 1px solid #6666cc;
+      border-radius: 8px;
+      padding: 6px 16px;
+      font-size: 0.95rem;
+      color: #ccccff;
+      animation: toastIn 0.2s ease, toastOut 0.4s ease 1.4s forwards;
+    }
+    @keyframes toastIn  { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes toastOut { to   { opacity: 0; transform: translateY(-8px); } }
+
+    /* ---- Floating score text ---- */
+    .float-score {
+      position: absolute;
+      font-weight: bold;
+      font-size: 1.1rem;
+      color: #ffe066;
+      text-shadow: 0 0 6px #ff880088;
+      pointer-events: none;
+      animation: floatUp 1s ease forwards;
+      user-select: none;
+    }
+    @keyframes floatUp {
+      0%   { opacity: 1; transform: translateY(0); }
+      100% { opacity: 0; transform: translateY(-60px); }
+    }
+
+    @media (max-width: 700px) {
+      #main { flex-direction: column; align-items: center; }
+      canvas { width: 100%; height: auto; }
+      #shop { max-height: 320px; width: 100%; max-width: 500px; }
+    }
+  </style>
+</head>
+<body>
+
+<h1>⚡ MEGABONK 2D ⚡</h1>
+
+<div id="score-bar">
+  <span>Score: <strong id="score-val">0</strong></span>
+  <span>Combo: <strong id="combo-val">x1</strong></span>
+  <span>All-time: <strong id="total-val">0</strong></span>
+  <span>Prestige: <strong id="prestige-val" style="color:#cc88ff">0</strong></span>
+</div>
+
+<div id="main">
+  <div id="canvas-wrap">
+    <canvas id="c" width="520" height="580"></canvas>
+  </div>
+
+  <div id="shop">
+    <h2>🛒 UPGRADES</h2>
+
+    <div class="section-title">Ball</div>
+    <!-- upgraded dynamically -->
+    <div id="upgrades-list"></div>
+
+    <div class="section-title">Prestige</div>
+    <button id="prestige-btn" disabled>⭐ PRESTIGE (need 10 000)</button>
+    <div id="prestige-info">Resets score &amp; upgrades. Each prestige = +25% bonus forever.</div>
+  </div>
+</div>
+
+<div id="toasts"></div>
+
+<script>
+// ─────────────────────────────────────────────
+// State
+// ─────────────────────────────────────────────
+const PRESTIGE_COST = 10000;
+
+let state = {
+  score: 0,
+  allTime: 0,
+  prestige: 0,
+  prestigeBonus: 1,   // +25% per prestige
+  combo: 1,
+  comboTimer: 0,
+  upgrades: {},       // id -> level
+  autoBonkTimer: 0,
+};
+
+// ─────────────────────────────────────────────
+// Upgrade definitions
+// ─────────────────────────────────────────────
+const UPGRADES = [
+  {
+    id: 'speed',
+    name: '🚀 Ball Speed',
+    desc: 'Increases how fast the ball zooms around.',
+    baseCost: 15,
+    costMul: 1.6,
+    maxLevel: 20,
+    apply: (lvl) => { /* handled in physics */ },
+    getValue: (lvl) => 1 + lvl * 0.25,
+  },
+  {
+    id: 'size',
+    name: '🎯 Ball Size',
+    desc: 'Larger ball = easier to click.',
+    baseCost: 20,
+    costMul: 1.55,
+    maxLevel: 15,
+    getValue: (lvl) => 16 + lvl * 3,
+  },
+  {
+    id: 'bonkPower',
+    name: '💥 Bonk Power',
+    desc: 'Each bonk scores more points.',
+    baseCost: 25,
+    costMul: 1.7,
+    maxLevel: 30,
+    getValue: (lvl) => 1 + lvl,
+  },
+  {
+    id: 'multiball',
+    name: '🎱 Multi-Ball',
+    desc: 'Add an extra ball to the arena.',
+    baseCost: 100,
+    costMul: 3.5,
+    maxLevel: 5,
+    getValue: (lvl) => lvl,
+  },
+  {
+    id: 'wallBounce',
+    name: '🔀 Wall Bonk',
+    desc: 'Balls score points on wall bounces too.',
+    baseCost: 80,
+    costMul: 2.2,
+    maxLevel: 10,
+    getValue: (lvl) => lvl * 0.5,
+  },
+  {
+    id: 'comboLen',
+    name: '⏱️ Combo Window',
+    desc: 'Extends how long combos last.',
+    baseCost: 60,
+    costMul: 1.9,
+    maxLevel: 10,
+    getValue: (lvl) => 1.5 + lvl * 0.4,
+  },
+  {
+    id: 'autoClick',
+    name: '🤖 Auto-Bonk',
+    desc: 'Automatically bonks balls periodically.',
+    baseCost: 200,
+    costMul: 2.8,
+    maxLevel: 8,
+    getValue: (lvl) => lvl,   // clicks per second
+  },
+  {
+    id: 'multiplier',
+    name: '✨ Score Multiplier',
+    desc: 'Multiplies all score gained.',
+    baseCost: 300,
+    costMul: 3.0,
+    maxLevel: 10,
+    getValue: (lvl) => 1 + lvl * 0.5,
+  },
+  {
+    id: 'trailLen',
+    name: '🌈 Particle Trail',
+    desc: 'Balls leave a colorful trail.',
+    baseCost: 50,
+    costMul: 1.8,
+    maxLevel: 5,
+    getValue: (lvl) => lvl,
+  },
+  {
+    id: 'gravity',
+    name: '🌍 Gravity Field',
+    desc: 'Gentle gravity makes the bounce wilder.',
+    baseCost: 150,
+    costMul: 2.5,
+    maxLevel: 5,
+    getValue: (lvl) => lvl * 0.04,
+  },
+];
+
+function upgLevel(id) { return state.upgrades[id] || 0; }
+function upgVal(id)   { const u = UPGRADES.find(u => u.id === id); return u ? u.getValue(upgLevel(id)) : 0; }
+function upgCost(id) {
+  const u = UPGRADES.find(u => u.id === id);
+  if (!u) return Infinity;
+  const lvl = upgLevel(id);
+  if (lvl >= u.maxLevel) return Infinity;
+  return Math.floor(u.baseCost * Math.pow(u.costMul, lvl));
+}
+
+// ─────────────────────────────────────────────
+// Canvas / physics
+// ─────────────────────────────────────────────
+const canvas = document.getElementById('c');
+const ctx    = canvas.getContext('2d');
+const W = canvas.width, H = canvas.height;
+
+const TRAIL_MAX = 30;
+
+function clampSpeed(b, minSpd, maxSpd) {
+  const spd = Math.hypot(b.vx, b.vy);
+  if (spd === 0) return;
+  if (spd > maxSpd) {
+    b.vx = b.vx / spd * maxSpd;
+    b.vy = b.vy / spd * maxSpd;
+  } else if (spd < minSpd) {
+    b.vx = b.vx / spd * minSpd;
+    b.vy = b.vy / spd * minSpd;
+  }
+}
+
+function makeBall(x, y, vx, vy, hue) {
+  return {
+    x, y, vx, vy,
+    hue: hue ?? Math.random() * 360,
+    trail: [],
+  };
+}
+
+let balls = [ makeBall(W/2, H/2, 3.2, -2.8, 200) ];
+
+// Particle pool
+const particles = [];
+function spawnParticles(x, y, hue, count) {
+  for (let i = 0; i < count; i++) {
+    const angle = Math.random() * Math.PI * 2;
+    const spd   = 1.5 + Math.random() * 3.5;
+    particles.push({
+      x, y,
+      vx: Math.cos(angle) * spd,
+      vy: Math.sin(angle) * spd,
+      life: 1,
+      decay: 0.03 + Math.random() * 0.04,
+      hue,
+      r: 2 + Math.random() * 3,
+    });
+  }
+}
+
+// ─────────────────────────────────────────────
+// Scoring
+// ─────────────────────────────────────────────
+function addScore(raw, x, y) {
+  const pts = Math.round(raw * upgVal('multiplier') * state.prestigeBonus * state.combo);
+  state.score  += pts;
+  state.allTime += pts;
+  updateUI();
+  if (x != null) spawnFloatScore(pts, x, y);
+  return pts;
+}
+
+function bonkCombo() {
+  state.combo   = Math.min(state.combo + 1, 64);
+  const comboSec = upgVal('comboLen');
+  state.comboTimer = comboSec * 60;
+}
+
+// ─────────────────────────────────────────────
+// Ball sync with upgrade
+// ─────────────────────────────────────────────
+function syncBalls() {
+  const desired = 1 + upgVal('multiball');
+  while (balls.length < desired) {
+    const angle = Math.random() * Math.PI * 2;
+    const spd   = (2 + Math.random()) * upgVal('speed');
+    balls.push(makeBall(
+      80 + Math.random() * (W - 160),
+      80 + Math.random() * (H - 160),
+      Math.cos(angle) * spd,
+      Math.sin(angle) * spd,
+      Math.random() * 360
+    ));
+  }
+  while (balls.length > desired) balls.pop();
+}
+
+// ─────────────────────────────────────────────
+// Physics update
+// ─────────────────────────────────────────────
+let lastTime = 0;
+function update(ts) {
+  const dt = Math.min((ts - lastTime) / 16.67, 3);
+  lastTime = ts;
+
+  const speedMul = upgVal('speed');
+  const radius   = upgVal('size');
+  const grav     = upgVal('gravity');
+  const wallPts  = upgVal('wallBounce');
+  const trailMax = upgVal('trailLen') * 6;
+
+  // Auto-bonk
+  if (upgVal('autoClick') > 0) {
+    state.autoBonkTimer += dt;
+    const interval = 60 / upgVal('autoClick');
+    if (state.autoBonkTimer >= interval) {
+      state.autoBonkTimer = 0;
+      // bonk the first ball
+      if (balls.length) {
+        const b = balls[0];
+        bonkBall(b, true);
+      }
+    }
+  }
+
+  // Combo decay
+  if (state.comboTimer > 0) {
+    state.comboTimer -= dt;
+    if (state.comboTimer <= 0) {
+      state.combo = 1;
+      document.getElementById('combo-val').textContent = 'x1';
+    }
+  }
+
+  // Move balls
+  for (const b of balls) {
+    // trail
+    if (trailMax > 0) {
+      b.trail.push({ x: b.x, y: b.y });
+      if (b.trail.length > trailMax) b.trail.shift();
+    } else {
+      b.trail.length = 0;
+    }
+
+    b.vy += grav * dt;
+    b.x  += b.vx * dt;
+    b.y  += b.vy * dt;
+
+    let bounced = false;
+    if (b.x - radius < 0) {
+      b.x  = radius; b.vx = Math.abs(b.vx) * speedMul;
+      bounced = true;
+    } else if (b.x + radius > W) {
+      b.x  = W - radius; b.vx = -Math.abs(b.vx) * speedMul;
+      bounced = true;
+    }
+    if (b.y - radius < 0) {
+      b.y  = radius; b.vy = Math.abs(b.vy) * speedMul;
+      bounced = true;
+    } else if (b.y + radius > H) {
+      b.y  = H - radius; b.vy = -Math.abs(b.vy) * speedMul;
+      bounced = true;
+    }
+
+    // Clamp speed within [min, max]
+    clampSpeed(b, 1.5 * speedMul, 14 * speedMul);
+
+    if (bounced && wallPts > 0) {
+      addScore(wallPts, b.x, b.y);
+      spawnParticles(b.x, b.y, b.hue, 3);
+    }
+  }
+
+  // Update particles
+  for (let i = particles.length - 1; i >= 0; i--) {
+    const p = particles[i];
+    p.x    += p.vx * dt;
+    p.y    += p.vy * dt;
+    p.vx   *= 0.96;
+    p.vy   *= 0.96;
+    p.life -= p.decay * dt;
+    if (p.life <= 0) particles.splice(i, 1);
+  }
+
+  draw();
+  requestAnimationFrame(update);
+}
+
+// ─────────────────────────────────────────────
+// Draw
+// ─────────────────────────────────────────────
+function draw() {
+  ctx.clearRect(0, 0, W, H);
+
+  // Background grid
+  ctx.strokeStyle = '#1a1a3a';
+  ctx.lineWidth = 1;
+  for (let x = 40; x < W; x += 40) {
+    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke();
+  }
+  for (let y = 40; y < H; y += 40) {
+    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
+  }
+
+  // Particles
+  for (const p of particles) {
+    ctx.globalAlpha = p.life;
+    ctx.fillStyle = `hsl(${p.hue},100%,65%)`;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+
+  // Trails
+  const radius = upgVal('size');
+  for (const b of balls) {
+    if (b.trail.length < 2) continue;
+    for (let i = 1; i < b.trail.length; i++) {
+      const t  = i / b.trail.length;
+      ctx.globalAlpha = t * 0.55;
+      ctx.strokeStyle = `hsl(${b.hue},100%,65%)`;
+      ctx.lineWidth   = radius * t * 0.8;
+      ctx.lineCap     = 'round';
+      ctx.beginPath();
+      ctx.moveTo(b.trail[i-1].x, b.trail[i-1].y);
+      ctx.lineTo(b.trail[i].x,   b.trail[i].y);
+      ctx.stroke();
+    }
+  }
+  ctx.globalAlpha = 1;
+
+  // Balls
+  for (const b of balls) {
+    const grad = ctx.createRadialGradient(
+      b.x - radius * 0.3, b.y - radius * 0.3, radius * 0.1,
+      b.x, b.y, radius
+    );
+    grad.addColorStop(0, `hsl(${b.hue},100%,90%)`);
+    grad.addColorStop(0.5, `hsl(${b.hue},100%,60%)`);
+    grad.addColorStop(1, `hsl(${b.hue},80%,30%)`);
+
+    ctx.shadowColor = `hsl(${b.hue},100%,65%)`;
+    ctx.shadowBlur  = 18;
+    ctx.fillStyle   = grad;
+    ctx.beginPath();
+    ctx.arc(b.x, b.y, radius, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.shadowBlur = 0;
+  }
+}
+
+// ─────────────────────────────────────────────
+// Click → Bonk
+// ─────────────────────────────────────────────
+canvas.addEventListener('click', (e) => {
+  const rect = canvas.getBoundingClientRect();
+  const scaleX = W / rect.width;
+  const scaleY = H / rect.height;
+  const mx = (e.clientX - rect.left) * scaleX;
+  const my = (e.clientY - rect.top)  * scaleY;
+  const radius = upgVal('size');
+
+  for (const b of balls) {
+    const dist = Math.hypot(mx - b.x, my - b.y);
+    if (dist <= radius + 10) {
+      bonkBall(b, false, mx, my);
+      return;
+    }
+  }
+  // Missed — flash canvas edge
+  canvas.style.outline = '2px solid #ff4444';
+  setTimeout(() => canvas.style.outline = '', 200);
+});
+
+function bonkBall(b, isAuto, mx, my) {
+  const power = upgVal('bonkPower');
+  bonkCombo();
+  const pts = addScore(power, b.x, b.y);
+
+  // Kick the ball away from click origin
+  if (!isAuto && mx != null) {
+    const dx = b.x - mx;
+    const dy = b.y - my;
+    const len = Math.hypot(dx, dy) || 1;
+    const kick = 3 + upgVal('speed');
+    b.vx += (dx / len) * kick;
+    b.vy += (dy / len) * kick;
+  } else {
+    // random kick
+    const angle = Math.random() * Math.PI * 2;
+    b.vx += Math.cos(angle) * 2.5;
+    b.vy += Math.sin(angle) * 2.5;
+  }
+
+  b.hue = (b.hue + 30) % 360;
+  spawnParticles(b.x, b.y, b.hue, 10 + Math.floor(upgLevel('trailLen') * 3));
+  showBonkText(b.x, b.y);
+}
+
+function showBonkText(bx, by) {
+  const el = document.createElement('div');
+  el.className = 'float-score';
+  el.textContent = state.combo > 1 ? `BONK x${state.combo}!` : 'BONK!';
+  const wrap = document.getElementById('canvas-wrap');
+  const rect  = canvas.getBoundingClientRect();
+  const wrect = wrap.getBoundingClientRect();
+  const scaleX = rect.width  / W;
+  const scaleY = rect.height / H;
+  el.style.left = (rect.left - wrect.left + bx * scaleX - 30) + 'px';
+  el.style.top  = (rect.top  - wrect.top  + by * scaleY - 20) + 'px';
+  wrap.appendChild(el);
+  setTimeout(() => el.remove(), 1100);
+}
+
+// ─────────────────────────────────────────────
+// Upgrade rendering + shop logic
+// ─────────────────────────────────────────────
+function renderShop() {
+  const list = document.getElementById('upgrades-list');
+  list.innerHTML = '';
+
+  for (const u of UPGRADES) {
+    const lvl  = upgLevel(u.id);
+    const cost = upgCost(u.id);
+    const maxed = lvl >= u.maxLevel;
+
+    const btn = document.createElement('button');
+    btn.className = 'upgrade-btn';
+    btn.disabled  = maxed || state.score < cost;
+    btn.dataset.id = u.id;
+
+    const val = u.getValue(lvl);
+    btn.innerHTML = `
+      <div class="upg-top">
+        <span class="upg-name">${u.name}</span>
+        <span class="upg-cost">${maxed ? 'MAXED' : '🪙 ' + fmt(cost)}</span>
+      </div>
+      <div class="upg-desc">${u.desc}</div>
+      <div class="upg-level">Level ${lvl}/${u.maxLevel} · Current: ${fmtVal(u.id, val)}</div>
+    `;
+
+    btn.addEventListener('click', () => buyUpgrade(u.id));
+    list.appendChild(btn);
+  }
+
+  // Prestige
+  const pBtn = document.getElementById('prestige-btn');
+  pBtn.disabled = state.score < PRESTIGE_COST;
+  pBtn.textContent = `⭐ PRESTIGE (need ${fmt(PRESTIGE_COST)})`;
+}
+
+function fmtVal(id, val) {
+  const map = {
+    speed:      `${val.toFixed(2)}x`,
+    size:       `r=${val.toFixed(0)}`,
+    bonkPower:  `+${val}pts`,
+    multiball:  `${val} extra`,
+    wallBounce: `${val.toFixed(1)}pts/bounce`,
+    comboLen:   `${val.toFixed(1)}s`,
+    autoClick:  `${val}/s`,
+    multiplier: `${val.toFixed(1)}x`,
+    trailLen:   `${val} segments`,
+    gravity:    `${val.toFixed(2)}`,
+  };
+  return map[id] ?? val;
+}
+
+function fmt(n) {
+  if (n >= 1e9) return (n/1e9).toFixed(1) + 'B';
+  if (n >= 1e6) return (n/1e6).toFixed(1) + 'M';
+  if (n >= 1e3) return (n/1e3).toFixed(1) + 'K';
+  return n.toString();
+}
+
+function buyUpgrade(id) {
+  const u = UPGRADES.find(u => u.id === id);
+  if (!u) return;
+  const cost = upgCost(id);
+  if (state.score < cost) return;
+  state.score -= cost;
+  state.upgrades[id] = (state.upgrades[id] || 0) + 1;
+  syncBalls();
+  updateUI();
+  renderShop();
+  showToast(`${u.name} upgraded!`);
+}
+
+// ─────────────────────────────────────────────
+// Prestige
+// ─────────────────────────────────────────────
+document.getElementById('prestige-btn').addEventListener('click', () => {
+  if (state.score < PRESTIGE_COST) return;
+  state.prestige++;
+  state.prestigeBonus = 1 + state.prestige * 0.25;
+  state.score    = 0;
+  state.upgrades = {};
+  state.combo    = 1;
+  state.comboTimer = 0;
+  balls = [ makeBall(W/2, H/2, 3.2, -2.8, 200) ];
+  particles.length = 0;
+  updateUI();
+  renderShop();
+  showToast(`🌟 Prestige ${state.prestige}! Bonus: ${fmt(Math.round(state.prestigeBonus*100))}%`);
+});
+
+// ─────────────────────────────────────────────
+// UI helpers
+// ─────────────────────────────────────────────
+function updateUI() {
+  document.getElementById('score-val').textContent   = fmt(Math.floor(state.score));
+  document.getElementById('combo-val').textContent   = `x${state.combo}`;
+  document.getElementById('total-val').textContent   = fmt(Math.floor(state.allTime));
+  document.getElementById('prestige-val').textContent = state.prestige;
+  renderShop();
+}
+
+function showToast(msg) {
+  const wrap = document.getElementById('toasts');
+  const el   = document.createElement('div');
+  el.className = 'toast';
+  el.textContent = msg;
+  wrap.appendChild(el);
+  setTimeout(() => el.remove(), 1800);
+}
+
+function spawnFloatScore(pts, bx, by) {
+  const el = document.createElement('div');
+  el.className = 'float-score';
+  el.textContent = `+${fmt(pts)}`;
+  const wrap  = document.getElementById('canvas-wrap');
+  const rect  = canvas.getBoundingClientRect();
+  const wrect = wrap.getBoundingClientRect();
+  const scaleX = rect.width  / W;
+  const scaleY = rect.height / H;
+  el.style.left = (rect.left - wrect.left + bx * scaleX + 5) + 'px';
+  el.style.top  = (rect.top  - wrect.top  + by * scaleY - 30) + 'px';
+  wrap.appendChild(el);
+  setTimeout(() => el.remove(), 1100);
+}
+
+// ─────────────────────────────────────────────
+// Save / Load (localStorage)
+// ─────────────────────────────────────────────
+function saveGame() {
+  localStorage.setItem('megabonk_save', JSON.stringify({
+    score:         state.score,
+    allTime:       state.allTime,
+    prestige:      state.prestige,
+    prestigeBonus: state.prestigeBonus,
+    upgrades:      state.upgrades,
+  }));
+}
+
+function loadGame() {
+  try {
+    const raw = localStorage.getItem('megabonk_save');
+    if (!raw) return;
+    const s = JSON.parse(raw);
+    state.score         = s.score         ?? 0;
+    state.allTime       = s.allTime       ?? 0;
+    state.prestige      = s.prestige      ?? 0;
+    state.prestigeBonus = s.prestigeBonus ?? 1;
+    state.upgrades      = s.upgrades      ?? {};
+    syncBalls();
+  } catch(e) { console.warn('Failed to load save:', e); }
+}
+
+setInterval(saveGame, 5000);
+
+// ─────────────────────────────────────────────
+// Boot
+// ─────────────────────────────────────────────
+loadGame();
+updateUI();
+renderShop();
+requestAnimationFrame((ts) => { lastTime = ts; requestAnimationFrame(update); });
+</script>
+</body>
+</html>
