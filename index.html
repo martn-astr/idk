@@ -314,7 +314,7 @@ const UPGRADES = [
   {
     id: 'trailLen',
     name: '🌈 Particle Trail',
-    desc: 'Balls leave a colourful trail.',
+    desc: 'Balls leave a colorful trail.',
     baseCost: 50,
     costMul: 1.8,
     maxLevel: 5,
@@ -349,6 +349,18 @@ const ctx    = canvas.getContext('2d');
 const W = canvas.width, H = canvas.height;
 
 const TRAIL_MAX = 30;
+
+function clampSpeed(b, minSpd, maxSpd) {
+  const spd = Math.hypot(b.vx, b.vy);
+  if (spd === 0) return;
+  if (spd > maxSpd) {
+    b.vx = b.vx / spd * maxSpd;
+    b.vy = b.vy / spd * maxSpd;
+  } else if (spd < minSpd) {
+    b.vx = b.vx / spd * minSpd;
+    b.vy = b.vy / spd * minSpd;
+  }
+}
 
 function makeBall(x, y, vx, vy, hue) {
   return {
@@ -482,22 +494,11 @@ function update(ts) {
       bounced = true;
     }
 
-    // Clamp speed so it doesn't go crazy
-    const spd = Math.hypot(b.vx, b.vy);
-    const maxSpd = 14 * speedMul;
-    if (spd > maxSpd) {
-      b.vx = b.vx / spd * maxSpd;
-      b.vy = b.vy / spd * maxSpd;
-    }
-    // Min speed
-    const minSpd = 1.5 * speedMul;
-    if (spd < minSpd) {
-      b.vx = b.vx / spd * minSpd;
-      b.vy = b.vy / spd * minSpd;
-    }
+    // Clamp speed within [min, max]
+    clampSpeed(b, 1.5 * speedMul, 14 * speedMul);
 
     if (bounced && wallPts > 0) {
-      const earned = addScore(wallPts, b.x, b.y);
+      addScore(wallPts, b.x, b.y);
       spawnParticles(b.x, b.y, b.hue, 3);
     }
   }
@@ -705,6 +706,8 @@ function fmt(n) {
 }
 
 function buyUpgrade(id) {
+  const u = UPGRADES.find(u => u.id === id);
+  if (!u) return;
   const cost = upgCost(id);
   if (state.score < cost) return;
   state.score -= cost;
@@ -712,7 +715,7 @@ function buyUpgrade(id) {
   syncBalls();
   updateUI();
   renderShop();
-  showToast(`${UPGRADES.find(u=>u.id===id).name} upgraded!`);
+  showToast(`${u.name} upgraded!`);
 }
 
 // ─────────────────────────────────────────────
@@ -792,7 +795,7 @@ function loadGame() {
     state.prestigeBonus = s.prestigeBonus ?? 1;
     state.upgrades      = s.upgrades      ?? {};
     syncBalls();
-  } catch(e) {}
+  } catch(e) { console.warn('Failed to load save:', e); }
 }
 
 setInterval(saveGame, 5000);
